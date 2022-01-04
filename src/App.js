@@ -28,6 +28,7 @@ const App = () => {
         audioRef={audioRef}
         isPlaying={isPlaying}
         setSongs={setSongs}
+        libraryStatus={libraryStatus}
       />
       <Song currentSong={currentSong} />
       <Player
