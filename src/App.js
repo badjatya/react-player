@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useState } from "react";
 
 // Importing Components
-import Song from "./components/Song"
-import Player from "./components/Player"
+import Song from "./components/Song";
+import Player from "./components/Player";
+
+// Importing data
+import data from "./data";
 
 const App = () => {
+  // State
+  const [songs, setSongs] = useState(data());
+  const [currentSong, setCurrentSong] = useState(songs[0]);
   return (
-    <div>
-      <Song />
+    <div className="App">
+      <Song currentSong={currentSong} />
       <Player />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
