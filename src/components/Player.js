@@ -1,12 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
-const Player = ({ currentSong, setIsPlaying, isPlaying }) => {
-  // Ref
-  const audioRef = useRef(null);
-
+const Player = ({ currentSong, setIsPlaying, isPlaying, audioRef }) => {
   // State
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
