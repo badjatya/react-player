@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useRef } from "react";
 
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
-const Player = () => {
+const Player = ({ currentSong }) => {
+  // Ref
+  const audioRef = useRef(null);
+
+  // Event Handler
+  const playSongHandler = () => {
+    console.log(audioRef.current);
+  };
   return (
     <div className="player">
       <div className="time-control">
@@ -13,9 +20,10 @@ const Player = () => {
       </div>
       <div className="play-control">
         <FaAngleLeft className="icon skip-back" />
-        <FaPlay className="icon play" />
+        <FaPlay onClick={playSongHandler} className="icon play" />
         <FaAngleRight className="icon skip-forward" />
       </div>
+      <audio ref={audioRef} src={currentSong.audio}></audio>
     </div>
   );
 };
