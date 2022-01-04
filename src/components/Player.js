@@ -1,13 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 // Importing Icons
-import { FaPlay, FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
 const Player = ({ currentSong, setIsPlaying, isPlaying }) => {
   // Ref
   const audioRef = useRef(null);
 
-  // Event Handler
+  // State
+  const [songInfo, setSongInfo] = useState({
+    currentTime: 0,
+    duration: 0,
+  });
+
+  // Play pause handler
   const playSongHandler = () => {
     // If song is playing pause it and if not play it
     if (isPlaying) {
@@ -18,19 +24,57 @@ const Player = ({ currentSong, setIsPlaying, isPlaying }) => {
       setIsPlaying(true);
     }
   };
+
+  // Updates the time handler
+  const timeUpdateHandler = (e) => {
+    const currentTime = e.target.currentTime;
+    const duration = e.target.duration;
+    setSongInfo({ ...songInfo, currentTime, duration });
+  };
+
+  // Format time
+  const getTime = (time) => {
+    return (
+      Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
+    );
+  };
+
+  // Drag Handler
+  const dragHandler = (e) => {
+    audioRef.current.currentTime = e.target.value;
+    setSongInfo({ ...songInfo, currentTime: e.target.value });
+  };
+
   return (
     <div className="player">
       <div className="time-control">
-        <p>Start Time</p>
-        <input type="range" />
-        <p>End Time</p>
+        <p>{getTime(songInfo.currentTime)}</p>
+        <input
+          min={0}
+          max={songInfo.duration}
+          value={songInfo.currentTime}
+          onChange={dragHandler}
+          type="range"
+        />
+        <p>{getTime(songInfo.duration)}</p>
       </div>
       <div className="play-control">
         <FaAngleLeft className="icon skip-back" />
-        <FaPlay onClick={playSongHandler} className="icon play" />
+
+        {isPlaying ? (
+          <FaPause onClick={playSongHandler} className="icon play" />
+        ) : (
+          <FaPlay onClick={playSongHandler} className="icon play" />
+        )}
+
         <FaAngleRight className="icon skip-forward" />
       </div>
-      <audio ref={audioRef} src={currentSong.audio}></audio>
+      <audio
+        onTimeUpdate={timeUpdateHandler}
+        onLoadedMetadata={timeUpdateHandler}
+        ref={audioRef}
+        src={currentSong.audio}
+      ></audio>
     </div>
   );
 };
