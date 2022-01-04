@@ -3,13 +3,20 @@ import React, { useRef } from "react";
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
-const Player = ({ currentSong }) => {
+const Player = ({ currentSong, setIsPlaying, isPlaying }) => {
   // Ref
   const audioRef = useRef(null);
 
   // Event Handler
   const playSongHandler = () => {
-    console.log(audioRef.current);
+    // If song is playing pause it and if not play it
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
   };
   return (
     <div className="player">
