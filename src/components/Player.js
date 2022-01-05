@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
+// Importing utils
+import { playAudio } from "../utils";
+
 const Player = ({
   currentSong,
   setIsPlaying,
@@ -58,12 +61,15 @@ const Player = ({
     // Skip forward
     if (direction === "skip-forward") {
       setCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+      playAudio(isPlaying, audioRef);
     } else {
       if ((currentSongIndex - 1) % songs.length === -1) {
         setCurrentSong(songs[songs.length - 1]);
+        playAudio(isPlaying, audioRef);
         return;
       }
       setCurrentSong(songs[(currentSongIndex - 1) % songs.length]);
+      playAudio(isPlaying, audioRef);
     }
   };
 
@@ -89,7 +95,7 @@ const Player = ({
   return (
     <div className="player">
       <div className="time-control">
-        <p>{getTime(songInfo.currentTime)}</p>
+        <p>{songInfo.currentTime ? getTime(songInfo.currentTime) : "0:00"}</p>
         <input
           min={0}
           max={songInfo.duration}
@@ -97,7 +103,7 @@ const Player = ({
           onChange={dragHandler}
           type="range"
         />
-        <p>{getTime(songInfo.duration)}</p>
+        <p>{songInfo.duration ? getTime(songInfo.duration) : "0:00"}</p>
       </div>
       <div className="play-control">
         <FaAngleLeft
