@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
@@ -19,6 +19,24 @@ const Player = ({
     animationPercentage: 0,
     volume: 0,
   });
+
+  // Update song handler
+  const updateSongHandler = (nextPrev) => {
+    const newSongs = songs.map((newSong) => {
+      if (newSong.id !== nextPrev.id) {
+        return {
+          ...newSong,
+          active: false,
+        };
+      } else {
+        return {
+          ...newSong,
+          active: true,
+        };
+      }
+    });
+    setSongs(newSongs);
+  };
 
   // Play pause handler
   const playSongHandler = () => {
@@ -71,14 +89,17 @@ const Player = ({
     // Skip forward
     if (direction === "skip-forward") {
       await setCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+      updateSongHandler(songs[(currentSongIndex + 1) % songs.length]);
       if (isPlaying) audioRef.current.play();
     } else {
       if ((currentSongIndex - 1) % songs.length === -1) {
         await setCurrentSong(songs[songs.length - 1]);
+        updateSongHandler(songs[songs.length - 1]);
         if (isPlaying) audioRef.current.play();
         return;
       }
       await setCurrentSong(songs[(currentSongIndex - 1) % songs.length]);
+      updateSongHandler(songs[(currentSongIndex - 1) % songs.length]);
       if (isPlaying) audioRef.current.play();
     }
   };
@@ -90,25 +111,6 @@ const Player = ({
     if (isPlaying) audioRef.current.play();
     return;
   };
-
-  // UseEffect
-  useEffect(() => {
-    // Setting the state
-    const newSongs = songs.map((newSong) => {
-      if (newSong.id !== currentSong.id) {
-        return {
-          ...newSong,
-          active: false,
-        };
-      } else {
-        return {
-          ...newSong,
-          active: true,
-        };
-      }
-    });
-    setSongs(newSongs);
-  }, [currentSong]);
 
   // Styles
   const trackAnim = {
