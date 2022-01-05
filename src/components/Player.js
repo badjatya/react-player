@@ -3,7 +3,14 @@ import React, { useState } from "react";
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
-const Player = ({ currentSong, setIsPlaying, isPlaying, audioRef }) => {
+const Player = ({
+  currentSong,
+  setIsPlaying,
+  isPlaying,
+  audioRef,
+  setCurrentSong,
+  songs,
+}) => {
   // State
   const [songInfo, setSongInfo] = useState({
     currentTime: 0,
@@ -42,6 +49,23 @@ const Player = ({ currentSong, setIsPlaying, isPlaying, audioRef }) => {
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
 
+  // Skip handler
+  const skipHandler = (direction) => {
+    const currentSongIndex = songs.findIndex(
+      (song) => song.id === currentSong.id
+    );
+    // Skip forward
+    if (direction === "skip-forward") {
+      setCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+    } else {
+      if ((currentSongIndex - 1) % songs.length === -1) {
+        setCurrentSong(songs[songs.length - 1]);
+        return;
+      }
+      setCurrentSong(songs[(currentSongIndex - 1) % songs.length]);
+    }
+  };
+
   return (
     <div className="player">
       <div className="time-control">
@@ -56,7 +80,10 @@ const Player = ({ currentSong, setIsPlaying, isPlaying, audioRef }) => {
         <p>{getTime(songInfo.duration)}</p>
       </div>
       <div className="play-control">
-        <FaAngleLeft className="icon skip-back" />
+        <FaAngleLeft
+          onClick={() => skipHandler("skip-backward")}
+          className="icon skip-back"
+        />
 
         {isPlaying ? (
           <FaPause onClick={playSongHandler} className="icon play" />
@@ -64,7 +91,10 @@ const Player = ({ currentSong, setIsPlaying, isPlaying, audioRef }) => {
           <FaPlay onClick={playSongHandler} className="icon play" />
         )}
 
-        <FaAngleRight className="icon skip-forward" />
+        <FaAngleRight
+          onClick={() => skipHandler("skip-forward")}
+          className="icon skip-forward"
+        />
       </div>
       <audio
         onTimeUpdate={timeUpdateHandler}
