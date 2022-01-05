@@ -3,9 +3,6 @@ import React, { useState, useEffect } from "react";
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
 
-// Importing utils
-import { playAudio } from "../utils";
-
 const Player = ({
   currentSong,
   setIsPlaying,
@@ -67,23 +64,31 @@ const Player = ({
   };
 
   // Skip handler
-  const skipHandler = (direction) => {
+  const skipHandler = async (direction) => {
     const currentSongIndex = songs.findIndex(
       (song) => song.id === currentSong.id
     );
     // Skip forward
     if (direction === "skip-forward") {
-      setCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
-      playAudio(isPlaying, audioRef);
+      await setCurrentSong(songs[(currentSongIndex + 1) % songs.length]);
+      if (isPlaying) audioRef.current.play();
     } else {
       if ((currentSongIndex - 1) % songs.length === -1) {
-        setCurrentSong(songs[songs.length - 1]);
-        playAudio(isPlaying, audioRef);
+        await setCurrentSong(songs[songs.length - 1]);
+        if (isPlaying) audioRef.current.play();
         return;
       }
-      setCurrentSong(songs[(currentSongIndex - 1) % songs.length]);
-      playAudio(isPlaying, audioRef);
+      await setCurrentSong(songs[(currentSongIndex - 1) % songs.length]);
+      if (isPlaying) audioRef.current.play();
     }
+  };
+
+  // Auto skipping song when song gets ended
+  const songEndHandler = async () => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+    if (isPlaying) audioRef.current.play();
+    return;
   };
 
   // UseEffect
@@ -154,6 +159,7 @@ const Player = ({
         onLoadedMetadata={timeUpdateHandler}
         ref={audioRef}
         src={currentSong.audio}
+        onEnded={songEndHandler}
       ></audio>
     </div>
   );
