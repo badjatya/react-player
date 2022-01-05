@@ -30,7 +30,7 @@ const App = () => {
         setSongs={setSongs}
         libraryStatus={libraryStatus}
       />
-      <Song currentSong={currentSong} />
+      <Song isPlaying={isPlaying} currentSong={currentSong} />
       <Player
         isPlaying={isPlaying}
         songs={songs}
