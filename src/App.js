@@ -35,6 +35,7 @@ const App = () => {
         isPlaying={isPlaying}
         songs={songs}
         setIsPlaying={setIsPlaying}
+        setSongs={setSongs}
         currentSong={currentSong}
         setCurrentSong={setCurrentSong}
         audioRef={audioRef}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Importing Icons
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from "react-icons/fa";
@@ -10,6 +10,7 @@ const Player = ({
   audioRef,
   setCurrentSong,
   songs,
+  setSongs,
 }) => {
   // State
   const [songInfo, setSongInfo] = useState({
@@ -65,6 +66,25 @@ const Player = ({
       setCurrentSong(songs[(currentSongIndex - 1) % songs.length]);
     }
   };
+
+  // UseEffect
+  useEffect(() => {
+    // Setting the state
+    const newSongs = songs.map((newSong) => {
+      if (newSong.id !== currentSong.id) {
+        return {
+          ...newSong,
+          active: false,
+        };
+      } else {
+        return {
+          ...newSong,
+          active: true,
+        };
+      }
+    });
+    setSongs(newSongs);
+  }, [currentSong]);
 
   return (
     <div className="player">
